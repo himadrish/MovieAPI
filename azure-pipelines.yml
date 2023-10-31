@@ -7,11 +7,30 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest' 
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
+  - task: CopyFiles@2
+    displayName: 'Stage Output'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)'
+      Contents: |
+        **
+        !**\builds\**
+        !**\build.cmd
+        !**\.git\**\*
+        !**\obj\**
+        !**\.vs\**\*
+        !**\.gitignore
+        !**\*.yml
+        !**\*.vssscc
+        !**\nuget.config
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      CleanTargetFolder: false
+      OverWrite: false
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
